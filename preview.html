@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Smart Farm Story</title>
+  <title>My Smart Farm Story Preview</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -13,7 +13,7 @@
   <div id="root" class="min-h-screen grid place-items-center bg-sky-50 p-8">
     <div class="rounded-2xl bg-white p-8 text-center shadow-xl">
       <h1 class="mb-3 text-2xl font-black text-green-700">🌾 My Smart Farm Story</h1>
-      <p class="mb-4 text-slate-600">Loading the interactive farm…</p>
+      <p class="mb-4 text-slate-600">Choose the TSX file to start the preview.</p>
       <input id="file" type="file" accept=".tsx,.ts" class="rounded-xl border p-3" />
     </div>
   </div>
@@ -32,7 +32,10 @@
       const file = event.target.files && event.target.files[0];
       if (file) file.text().then(mount).catch(showError);
     });
-    fetch('./my_smart_farm_story.tsx').then(response => response.text()).then(mount).catch(() => {});
+    fetch('./my_smart_farm_story.tsx')
+      .then(response => response.text())
+      .then(mount)
+      .catch(() => {});
   </script>
 </body>
 </html>
