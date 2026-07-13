@@ -1,41 +1,480 @@
-<!doctype html>
-<html lang="zh-Hant">
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Smart Farm Story Preview</title>
+  <title>My Smart Farm Story - Human AI Co-Creation</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    body { 
+      margin: 0; 
+      padding: 0; 
+      overflow-x: hidden; 
+      font-family: 'Inter', sans-serif;
+    }
+    .fade-in { 
+      animation: fadeIn .45s ease-in; 
+    }
+    @keyframes fadeIn { 
+      from { opacity: 0; transform: translateY(10px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+  </style>
 </head>
-<body class="m-0">
-  <div id="root" class="min-h-screen grid place-items-center bg-sky-50 p-8">
-    <div class="rounded-2xl bg-white p-8 text-center shadow-xl">
-      <h1 class="mb-3 text-2xl font-black text-green-700">🌾 My Smart Farm Story</h1>
-      <p class="mb-4 text-slate-600">Choose the TSX file to start the preview.</p>
-      <input id="file" type="file" accept=".tsx,.ts" class="rounded-xl border p-3" />
-    </div>
-  </div>
-  <script>
-    function mount(source) {
-      const clean = source.replace(/export default function App/, 'function App');
-      const compiled = Babel.transform(clean, { presets: ['typescript', 'react'] }).code;
-      const run = new Function('React', 'ReactDOM', compiled + '\nreturn App;');
-      const App = run(React, ReactDOM);
-      ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+<body class="bg-yellow-50">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useRef, useEffect } = React;
+
+    const Icon = ({ children, className }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+    );
+    const CopyIcon = ({ className }) => <Icon className={className}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></Icon>;
+    const CheckIcon = ({ className }) => <Icon className={className}><polyline points="20 6 9 17 4 12"/></Icon>;
+    const PencilIcon = ({ className }) => <Icon className={className}><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></Icon>;
+    const Wand2Icon = ({ className }) => <Icon className={className}><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></Icon>;
+    const RefreshCwIcon = ({ className }) => <Icon className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></Icon>;
+    const Volume2Icon = ({ className }) => <Icon className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></Icon>;
+    const SquareIcon = ({ className }) => <Icon className={className}><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/></Icon>;
+    const HelpCircleIcon = ({ className }) => <Icon className={className}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></Icon>;
+
+    function App() {
+      const [step, setStep] = useState('edit');
+      const [copied, setCopied] = useState(false);
+      const [reportCopied, setReportCopied] = useState(false);
+      const [isSpeaking, setIsSpeaking] = useState(false);
+      
+      // Initializing speech synthesis reference safely
+      const synthesisRef = useRef(null);
+      useEffect(() => {
+        if ('speechSynthesis' in window) {
+          synthesisRef.current = window.speechSynthesis;
+        }
+      }, []);
+
+      const [formData, setFormData] = useState({
+        person:'', crop:'', animals:'', tech:'', fruit:'', tech2:'', adjective:'', ending:''
+      });
+      
+      // State for reflections and improvements
+      const [improvedStory, setImprovedStory] = useState('');
+      const [whyImprove, setWhyImprove] = useState('');
+      const [quizQuestion, setQuizQuestion] = useState('');
+      const [quizFeedback, setQuizFeedback] = useState(null);
+      const [questionLevel, setQuestionLevel] = useState('');
+      const [imageMatch, setImageMatch] = useState('');
+      const [imageDifferent, setImageDifferent] = useState('');
+      const [promptImprove, setPromptImprove] = useState('');
+      const [aiHelped, setAiHelped] = useState([]);
+      const [iImproved, setIImproved] = useState([]);
+
+      const fields = [
+        { id:'person', label:'1. Family Member (家庭成員)', placeholder:'e.g., grandma, uncle', suggestions:['grandma','grandpa','uncle','aunt','sister','brother'] },
+        { id:'crop', label:'2. Crop/Food (農作物)', placeholder:'e.g., rice, corn', suggestions:['rice','corn','wheat','lettuce','cabbage'] },
+        { id:'animals', label:'3. Animals (動物 - 複數)', placeholder:'e.g., ducks, dogs', suggestions:['ducks','chickens','dogs','bees','cats'] },
+        { id:'tech', label:'4. Tool/Device (科技工具)', placeholder:'e.g., smartphone', suggestions:['smartphone','tablet','computer','iPad','watch'] },
+        { id:'fruit', label:'5. Fruit/Veg to count (要數的東西 - 複數)', placeholder:'e.g., watermelons', suggestions:['watermelons','pumpkins','apples','tomatoes'] },
+        { id:'tech2', label:'6. Modern Machine (現代機器 - 複數)', placeholder:'e.g., drones', suggestions:['drones','robots','cameras','sensors'] },
+        { id:'adjective', label:'7. Adjective (形容詞)', placeholder:'e.g., organic', suggestions:['organic','fresh','yummy','sweet','natural'] },
+        { id:'ending', label:'8. Fun Ending (有趣的結尾)', placeholder:"It's...", suggestions:['healthy and good for the earth','super yummy and gives me power','magical and makes me fly','expensive but worth it','spicy like a dragon\'s fire','the best food in the universe'] }
+      ];
+
+      const derivedPronoun = useMemo(() => {
+        const input = formData.person.trim().toLowerCase();
+        const maleKeywords = ['grandpa','dad','father','uncle','brother','boy','king','prince','sir','mr','man'];
+        return maleKeywords.some(k => input.includes(k)) ? 'He' : 'She';
+      }, [formData.person]);
+      const poss = derivedPronoun === 'He' ? 'his' : 'her';
+
+      const storyText = () => `This is my ${formData.person}. ${derivedPronoun} grows the best ${formData.crop} in town. Look at these happy ${formData.animals}. Because of their hard work, we can eat healthy ${formData.crop} every day.\n\nMy ${formData.person} knows everything on the farm with ${poss} ${formData.tech}. Do you know how many ${formData.fruit} there are? ${formData.tech2} can quickly count them for us in a short time. It's very helpful.\n\nWhat would you like to eat today? How about something ${formData.adjective}? It's ${formData.ending}.`;
+      const finalStory = improvedStory.trim() || storyText();
+
+      const handleInputChange = (id, value) => setFormData(prev => ({...prev, [id]: value}));
+
+      const validateAndGenerate = () => {
+        const trimmed = {};
+        let firstEmpty = null;
+        Object.keys(formData).forEach(k => {
+          trimmed[k] = formData[k].trim();
+          if (!trimmed[k] && !firstEmpty) firstEmpty = k;
+        });
+        setFormData(trimmed);
+        if (firstEmpty) {
+          const label = fields.find(f => f.id === firstEmpty)?.label || firstEmpty;
+          // Custom modal style alert
+          alert(`⚠️ Please finish: ${label}\n請完成：${label}`);
+          return;
+        }
+        setImprovedStory(storyText());
+        setStep('preview');
+      };
+
+      const copyToClipboard = (text, setter) => {
+        const area = document.createElement('textarea');
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        document.body.removeChild(area);
+        setter(true);
+        setTimeout(() => setter(false), 1800);
+      };
+
+      const speak = (text) => {
+        if (!synthesisRef.current) return alert('Your browser does not support text-to-speech.');
+        synthesisRef.current.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.85;
+        u.pitch = 1.05;
+        u.onstart = () => setIsSpeaking(true);
+        u.onend = () => setIsSpeaking(false);
+        u.onerror = () => setIsSpeaking(false);
+        synthesisRef.current.speak(u);
+      };
+      
+      const stopSpeak = () => { 
+        if(synthesisRef.current) {
+            synthesisRef.current.cancel(); 
+        }
+        setIsSpeaking(false); 
+      };
+
+      const checkQuestionGrammar = () => {
+        const q = quizQuestion.trim();
+        if (!q) return setQuizFeedback({type:'error', message:'Please write a question first. 請先寫下問題。'});
+        if (!q.endsWith('?')) return setQuizFeedback({type:'error', message:'Don\'t forget the question mark (?) at the end. 別忘了問號。'});
+        if (q[0] !== q[0].toUpperCase()) return setQuizFeedback({type:'error', message:'Start with a capital letter. 句首字母要大寫。'});
+        const firstWord = q.split(' ')[0].replace(/[^a-zA-Z]/g, '');
+        const starters = ['Who','What','Where','When','Why','How','Do','Does','Is','Are','Can','Could','Would','Did'];
+        if (!starters.some(s => s.toLowerCase() === firstWord.toLowerCase())) {
+          return setQuizFeedback({type:'warning', message:'Try starting with Who, What, Where, When, Why or How. 試著用疑問詞開頭。'});
+        }
+        setQuizFeedback({type:'success', message:'Great! Your question format is correct. 問題格式正確。'});
+      };
+
+      const classifyQuestion = () => {
+        const q = quizQuestion.trim().toLowerCase();
+        if (!q) return setQuestionLevel('');
+        if (q.startsWith('why') || q.startsWith('how can') || q.startsWith('how does') || q.includes('future') || q.includes('help')) return setQuestionLevel('Level 3: Thinking Question 深層思考問題');
+        if (q.startsWith('why') || q.startsWith('how')) return setQuestionLevel('Level 2: Reasoning Question 原因推論問題');
+        setQuestionLevel('Level 1: Information Question 資訊查找問題');
+      };
+
+      const toggle = (value, list, setter) => {
+        setter(list.includes(value) ? list.filter(x => x !== value) : [...list, value]);
+      };
+
+      const copyLearningReport = () => {
+        const report = `MY SMART FARM STORY LEARNING REPORT\n\n[Original / AI Story]\n${storyText()}\n\n[My Improved Story]\n${finalStory}\n\n[Why I Changed It]\n${whyImprove || 'None'}\n\n[My Question]\n${quizQuestion || 'None'}\n${questionLevel ? `[Question Level] ${questionLevel}` : ''}\n\n[AI Image Reflection]\nImage matches my story: ${imageMatch || 'Not checked'}\nWhat is different: ${imageDifferent || 'None'}\nHow can I improve the prompt: ${promptImprove || 'None'}\n\n[Human + AI Reflection]\nAI helped me: ${aiHelped.join(', ') || 'None'}\nI improved AI by: ${iImproved.join(', ') || 'None'}`;
+        copyToClipboard(report, setReportCopied);
+      };
+
+      const resetForm = () => {
+        stopSpeak();
+        setFormData({person:'', crop:'', animals:'', tech:'', fruit:'', tech2:'', adjective:'', ending:''});
+        setImprovedStory(''); setWhyImprove(''); setQuizQuestion(''); setQuizFeedback(null); setQuestionLevel('');
+        setImageMatch(''); setImageDifferent(''); setPromptImprove(''); setAiHelped([]); setIImproved([]);
+        setStep('edit');
+      };
+
+      return (
+        <div className="min-h-screen p-4 md:p-8 font-sans text-slate-800 flex items-center justify-center">
+          <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-green-200">
+            {/* Header Section */}
+            <div className="bg-green-500 p-6 md:p-8 text-white text-center relative overflow-hidden">
+              <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(circle at center, white 10%, transparent 10.5%)', backgroundSize: '20px 20px'}}></div>
+              <h1 className="text-3xl md:text-4xl font-bold mb-3 flex items-center justify-center gap-3 relative z-10">
+                <Wand2Icon className="w-8 h-8 md:w-10 md:h-10" /> 
+                My Smart Farm Story
+              </h1>
+              <p className="text-green-100 text-lg md:text-xl relative z-10 font-medium">Build → Improve → Question → Reflect</p>
+            </div>
+
+            <div className="p-6 md:p-8">
+              {step === 'edit' ? (
+                <div className="space-y-6 fade-in">
+                  <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg text-blue-800 shadow-sm flex gap-3">
+                    <HelpCircleIcon className="w-6 h-6 flex-shrink-0 text-blue-500 mt-1" />
+                    <p className="text-sm md:text-base leading-relaxed">
+                      請填寫空格，系統會產生一篇農場故事。完成後，你還要進行「故事改良、提問設計、AI圖像判讀與人機協作反思」。
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {fields.map(field => {
+                      const isCustom = formData[field.id] && !field.suggestions.includes(formData[field.id]);
+                      return (
+                        <div key={field.id} className={`bg-slate-50 p-5 rounded-2xl border-2 transition-colors duration-200 ${isCustom ? 'border-green-400 bg-green-50/50' : 'border-slate-200 hover:border-green-300'}`}>
+                          <label className="block text-sm md:text-base font-bold text-slate-700 mb-3">{field.label}</label>
+                          <div className="relative">
+                            {field.id === 'ending' && <span className="absolute left-4 top-3.5 text-slate-400 font-bold">It's...</span>}
+                            <input 
+                              type="text" 
+                              value={formData[field.id]} 
+                              onChange={e => handleInputChange(field.id, e.target.value)} 
+                              placeholder={field.placeholder} 
+                              className={`w-full p-3 md:p-4 rounded-xl border-2 focus:outline-none focus:ring-4 focus:ring-green-100 transition-all text-base md:text-lg shadow-sm ${isCustom ? 'border-green-500 text-green-900 bg-white' : 'border-slate-200 focus:border-green-400'} ${field.id === 'ending' ? 'pl-16' : ''}`} 
+                            />
+                            {isCustom && <div className="absolute right-4 top-4 text-green-500"><CheckIcon className="w-6 h-6" /></div>}
+                          </div>
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {field.suggestions.map(s => (
+                              <button 
+                                key={s} 
+                                onClick={() => handleInputChange(field.id, s)} 
+                                className={`text-sm border-2 px-3 py-1.5 rounded-full font-medium transition-colors ${formData[field.id] === s ? 'bg-green-500 text-white border-green-500 shadow-md' : 'bg-white border-slate-200 text-slate-600 hover:bg-green-50 hover:border-green-300'}`}
+                              >
+                                {s}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  <div className="flex justify-center pt-6 pb-2">
+                    <button 
+                      onClick={validateAndGenerate} 
+                      className="bg-green-500 text-white hover:bg-green-600 px-8 py-4 rounded-full font-bold text-xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 active:translate-y-0 active:scale-95 flex items-center gap-3"
+                    >
+                      <Wand2Icon className="w-6 h-6" /> 
+                      Check & Generate Story
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="fade-in space-y-8">
+                  {/* Step 1: AI Story */}
+                  <section className="bg-white border-2 border-dashed border-slate-300 rounded-2xl p-6 md:p-8 shadow-sm relative mt-4">
+                    <div className="absolute -top-4 left-6 bg-yellow-400 text-yellow-900 text-sm font-bold px-4 py-1.5 rounded-full shadow-md uppercase tracking-wide">
+                      Step 1: AI Story
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-green-800">My {formData.person}'s Farm</h2>
+                    <p className="whitespace-pre-line text-lg md:text-xl leading-relaxed text-slate-700 font-medium bg-slate-50 p-6 rounded-xl border border-slate-100">
+                      {storyText()}
+                    </p>
+                  </section>
+
+                  {/* Step 2: Story Evolution */}
+                  <section className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 md:p-8 shadow-sm">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="bg-amber-400 text-amber-900 p-1.5 rounded-lg"><PencilIcon className="w-5 h-5"/></div>
+                      <h3 className="text-xl md:text-2xl font-bold text-amber-900">Step 2: Story Evolution 故事改良歷程</h3>
+                    </div>
+                    <p className="text-sm md:text-base text-amber-700 mb-6 bg-white p-3 rounded-lg border border-amber-100">
+                      請閱讀 AI 產生的故事，加入自己的想法，讓故事更清楚、更有創意。
+                    </p>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-2">My Improved Story（我的改良版本）</label>
+                        <textarea 
+                          value={improvedStory} 
+                          onChange={e => setImprovedStory(e.target.value)} 
+                          rows="6" 
+                          className="w-full p-4 border-2 border-amber-300 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100 transition-all text-base md:text-lg shadow-inner" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-2">Why did I change it?（我為什麼要修改？）</label>
+                        <textarea 
+                          value={whyImprove} 
+                          onChange={e => setWhyImprove(e.target.value)} 
+                          rows="2" 
+                          placeholder="e.g., I added more details about drones because technology can help farmers." 
+                          className="w-full p-4 border-2 border-amber-300 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100 transition-all text-base shadow-inner" 
+                        />
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Action Buttons for Final Story */}
+                  <div className="flex flex-wrap justify-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    {isSpeaking ? (
+                      <button onClick={stopSpeak} className="px-6 py-3 rounded-xl font-bold flex items-center gap-2 bg-red-100 text-red-700 hover:bg-red-200 transition-colors shadow-sm animate-pulse">
+                        <SquareIcon className="w-5 h-5 fill-current"/> Stop Listening
+                      </button>
+                    ) : (
+                      <button onClick={() => speak(finalStory)} className="px-6 py-3 rounded-xl font-bold flex items-center gap-2 bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors shadow-sm">
+                        <Volume2Icon className="w-5 h-5"/> Listen to Final Story
+                      </button>
+                    )}
+                    
+                    <button onClick={() => copyToClipboard(finalStory, setCopied)} className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm ${copied ? 'bg-green-600 text-white shadow-md transform scale-105' : 'bg-green-500 text-white hover:bg-green-600 hover:shadow-md'}`}>
+                      {copied ? <CheckIcon className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />} 
+                      {copied ? 'Copied!' : 'Copy Final Story'}
+                    </button>
+                    
+                    <div className="w-full md:w-auto flex justify-center gap-4 border-t md:border-t-0 md:border-l border-slate-200 pt-4 md:pt-0 md:pl-4 mt-2 md:mt-0">
+                      <button onClick={() => { stopSpeak(); setStep('edit'); }} className="px-5 py-3 bg-white border-2 border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center gap-2">
+                        <PencilIcon className="w-4 h-4" /> Edit Inputs
+                      </button>
+                      <button onClick={resetForm} className="px-5 py-3 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors flex items-center gap-2">
+                        <RefreshCwIcon className="w-4 h-4" /> Start Over
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Step 3: Question Design */}
+                  <section className="bg-purple-50 border-2 border-purple-200 rounded-2xl p-6 md:p-8 shadow-sm relative mt-8">
+                    <div className="absolute -top-4 left-6 bg-purple-500 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-md uppercase tracking-wide flex items-center gap-1.5">
+                      <HelpCircleIcon className="w-4 h-4"/> Step 3: Question Design
+                    </div>
+                    
+                    <h3 className="text-xl md:text-2xl font-bold text-purple-900 mt-2 mb-3">Create a Question 設計一個問題</h3>
+                    <p className="text-purple-700 mb-6 bg-white p-3 rounded-lg border border-purple-100 text-sm md:text-base">
+                      請根據你的故事設計問題。試著從「資訊問題」升級到「思考問題」。
+                    </p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                      <div className="bg-white p-4 rounded-xl border-2 border-purple-100 shadow-sm hover:border-purple-300 transition-colors">
+                        <span className="inline-block bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded mb-2">Level 1</span>
+                        <p className="font-medium text-slate-700">Who grows rice?</p>
+                      </div>
+                      <div className="bg-white p-4 rounded-xl border-2 border-purple-100 shadow-sm hover:border-purple-300 transition-colors">
+                        <span className="inline-block bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded mb-2">Level 2</span>
+                        <p className="font-medium text-slate-700">Why are ducks helpful?</p>
+                      </div>
+                      <div className="bg-white p-4 rounded-xl border-2 border-purple-100 shadow-sm hover:border-purple-300 transition-colors">
+                        <span className="inline-block bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded mb-2">Level 3</span>
+                        <p className="font-medium text-slate-700">How can technology help farms?</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                      <input 
+                        type="text" 
+                        value={quizQuestion} 
+                        onChange={e => { setQuizQuestion(e.target.value); setQuizFeedback(null); }} 
+                        placeholder="e.g. How can drones help farmers?" 
+                        className="flex-1 p-4 border-2 border-purple-300 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 focus:outline-none text-base shadow-inner" 
+                      />
+                      <button 
+                        onClick={() => { checkQuestionGrammar(); classifyQuestion(); }} 
+                        className="bg-purple-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-purple-700 transition-colors shadow-md whitespace-nowrap"
+                      >
+                        Check Question
+                      </button>
+                    </div>
+                    
+                    {quizFeedback && (
+                      <div className={`p-4 rounded-xl mb-4 text-sm md:text-base font-bold flex items-center gap-3 shadow-sm ${quizFeedback.type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : quizFeedback.type === 'warning' ? 'bg-orange-100 text-orange-800 border border-orange-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
+                        {quizFeedback.type === 'success' ? <CheckIcon className="w-6 h-6 flex-shrink-0"/> : <span className="text-xl">⚠️</span>}
+                        {quizFeedback.message}
+                      </div>
+                    )}
+                    
+                    {questionLevel && (
+                      <div className="bg-white border-2 border-purple-400 p-4 rounded-xl text-purple-900 font-bold shadow-sm flex items-center justify-between">
+                        <span>Analysis Result:</span>
+                        <span className="bg-purple-100 px-3 py-1 rounded-lg">{questionLevel}</span>
+                      </div>
+                    )}
+                  </section>
+
+                  {/* Step 4: AI Image Reflection */}
+                  <section className="bg-sky-50 border-2 border-sky-200 rounded-2xl p-6 md:p-8 shadow-sm">
+                    <h3 className="text-xl md:text-2xl font-bold text-sky-900 mb-3 flex items-center gap-2">
+                      <span className="bg-sky-200 p-1.5 rounded-lg"><Wand2Icon className="w-5 h-5 text-sky-700"/></span>
+                      Step 4: AI Image Reflection
+                    </h3>
+                    <p className="text-sm md:text-base text-sky-800 mb-6 bg-white p-3 rounded-lg border border-sky-100">
+                      請將你的故事拿去 AI 繪圖工具生成圖片後，回來檢查圖片是否符合故事。
+                    </p>
+                    
+                    <div className="bg-white p-5 rounded-xl border border-sky-200 mb-5">
+                      <span className="font-bold text-slate-700 block mb-3">Does your image match your story? (圖片符合故事嗎？)</span>
+                      <div className="flex gap-6">
+                        <label className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-sky-50">
+                          <input type="radio" name="imageMatch" value="Yes" checked={imageMatch==='Yes'} onChange={e => setImageMatch(e.target.value)} className="w-5 h-5 text-sky-600 focus:ring-sky-500" /> 
+                          <span className="font-medium">Yes</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-sky-50">
+                          <input type="radio" name="imageMatch" value="No" checked={imageMatch==='No'} onChange={e => setImageMatch(e.target.value)} className="w-5 h-5 text-sky-600 focus:ring-sky-500" /> 
+                          <span className="font-medium">No</span>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-2">What is different?（圖片和故事哪裡不同？）</label>
+                        <textarea 
+                          value={imageDifferent} 
+                          onChange={e => setImageDifferent(e.target.value)} 
+                          rows="2" 
+                          className="w-full p-4 border-2 border-sky-300 rounded-xl focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100 transition-all shadow-inner" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-2">How can I improve the prompt?（我可以如何改進提示語？）</label>
+                        <textarea 
+                          value={promptImprove} 
+                          onChange={e => setPromptImprove(e.target.value)} 
+                          rows="2" 
+                          className="w-full p-4 border-2 border-sky-300 rounded-xl focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100 transition-all shadow-inner" 
+                        />
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Step 5: Human + AI Reflection */}
+                  <section className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-6 md:p-8 shadow-sm">
+                    <h3 className="text-xl md:text-2xl font-bold text-emerald-900 mb-6">Step 5: Human + AI Reflection 人機協作反思</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                      <div className="bg-white rounded-xl p-5 border-2 border-emerald-100 shadow-sm">
+                        <p className="font-bold text-emerald-800 mb-4 pb-2 border-b border-emerald-100">AI helped me: (AI 幫助了我什麼)</p>
+                        <div className="space-y-3">
+                          {['Generate ideas','Organize my story','Create questions','Create images'].map(x => (
+                            <label key={x} className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-emerald-50 transition-colors">
+                              <input type="checkbox" checked={aiHelped.includes(x)} onChange={() => toggle(x, aiHelped, setAiHelped)} className="w-5 h-5 rounded text-emerald-600 focus:ring-emerald-500" /> 
+                              <span className="font-medium text-slate-700">{x}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="bg-white rounded-xl p-5 border-2 border-emerald-100 shadow-sm">
+                        <p className="font-bold text-emerald-800 mb-4 pb-2 border-b border-emerald-100">I improved AI by: (我改善了 AI 什麼)</p>
+                        <div className="space-y-3">
+                          {['Changing words','Adding details','Fixing mistakes','Creating better questions'].map(x => (
+                            <label key={x} className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-emerald-50 transition-colors">
+                              <input type="checkbox" checked={iImproved.includes(x)} onChange={() => toggle(x, iImproved, setIImproved)} className="w-5 h-5 rounded text-emerald-600 focus:ring-emerald-500" /> 
+                              <span className="font-medium text-slate-700">{x}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      onClick={copyLearningReport} 
+                      className={`w-full py-4 rounded-xl font-bold text-lg md:text-xl flex items-center justify-center gap-3 transition-all shadow-md ${reportCopied ? 'bg-emerald-600 text-white transform scale-[1.02]' : 'bg-white border-4 border-emerald-500 text-emerald-700 hover:bg-emerald-50 hover:shadow-lg'}`}
+                    >
+                      {reportCopied ? <CheckIcon className="w-6 h-6" /> : <CopyIcon className="w-6 h-6" />} 
+                      {reportCopied ? 'Learning Report Copied Successfully!' : 'Generate & Copy Learning Report'}
+                    </button>
+                  </section>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
     }
-    function showError(error) {
-      document.getElementById('root').innerHTML = '<pre style="padding:2rem;color:#b91c1c">Preview failed: ' + error + '</pre>';
-    }
-    document.getElementById('file').addEventListener('change', event => {
-      const file = event.target.files && event.target.files[0];
-      if (file) file.text().then(mount).catch(showError);
-    });
-    fetch('./my_smart_farm_story.tsx')
-      .then(response => response.text())
-      .then(mount)
-      .catch(() => {});
+
+    const rootElement = document.getElementById('root');
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(<App />);
   </script>
 </body>
 </html>
