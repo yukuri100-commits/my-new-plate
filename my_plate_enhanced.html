@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My Plate｜健康餐盤英語練習</title>
+  <style>
+    :root{--ink:#26354a;--orange:#ff7a18;--blue:#1298d5;--line:#dbe7ee;--paper:#fffdf7}*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff7e7,#e8f8ff);font-family:"Trebuchet MS","Microsoft JhengHei",sans-serif;color:var(--ink)}button,input{font:inherit}button{cursor:pointer}.page{max-width:1180px;margin:auto;padding:28px 20px 50px}.top{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}.practice{color:var(--blue);font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-1px}.subtitle{font-size:18px;font-weight:700}.badge{background:#fff;border:3px solid #ff7043;border-radius:50%;color:#f15b39;padding:12px 8px;font-weight:900;box-shadow:0 4px 0 #ffd6c7}.card{background:rgba(255,255,255,.94);border-radius:28px;box-shadow:0 18px 50px #8da8b333;padding:clamp(18px,4vw,38px)}.intro{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center;border-bottom:2px dashed #d8e5ea;padding-bottom:30px}.title{font-size:clamp(31px,5vw,52px);line-height:1;margin:0;color:#f36b17;text-shadow:2px 2px 0 #fff,4px 4px 0 #ffdfad}.hint{font-size:17px;line-height:1.7;color:#587080;margin:15px 0 20px}.go{background:linear-gradient(135deg,#ff9b22,#f4612d);border:0;border-radius:15px;color:white;padding:14px 20px;font-weight:900;box-shadow:0 5px 0 #cf491e;transition:.2s}.go:hover{transform:translateY(-2px)}.plate-wrap{position:relative;min-height:325px;display:grid;place-items:center}.plate{width:min(100%,410px);aspect-ratio:1.28;background:#fff;border:12px solid #e8eaeb;border-radius:46% 46% 44% 44%;box-shadow:inset 0 0 0 3px #aeb7ba,0 12px 20px #40526533;padding:14px;display:grid;grid-template-columns:1fr 1.4fr;grid-template-rows:1.05fr .95fr;gap:10px}.zone{border-radius:18px;padding:10px;position:relative;overflow:hidden;display:flex;flex-wrap:wrap;align-content:flex-end;gap:6px;border:2px solid}.zone h3{position:absolute;top:3px;left:10px;margin:0;font-size:14px;letter-spacing:.3px}.fruit{background:#fff7df;border-color:#ff8b23;color:#e65d06;grid-row:span 2}.veg{background:#ecf8c7;border-color:#8fc45e;color:#3c9324}.protein{background:#ffe0df;border-color:#f79a9b;color:#dc3456}.grains{background:#fff9bd;border-color:#efc91e;color:#b68700}.food{font-size:34px;line-height:1;filter:drop-shadow(1px 2px 1px #5553);transition:.2s}.food:hover{transform:rotate(-10deg) scale(1.18)}.dairy{position:absolute;left:-3px;top:10px;width:108px;height:108px;background:#fafdff;border:3px solid #70bff0;border-radius:50%;display:grid;place-content:center;text-align:center;color:#168ed0;font-size:12px;font-weight:900}.dairy span{font-size:34px}.nuts{position:absolute;right:-4px;top:4px;color:#bd7c27;font-size:12px;font-weight:900;text-align:center}.nuts span{font-size:34px;display:block}.fork{position:absolute;right:-25px;bottom:25px;font-size:70px;transform:rotate(-8deg);opacity:.65}.section{padding-top:30px}.section-head{display:flex;align-items:center;gap:10px;margin:0 0 16px;font-size:24px}.letter{display:inline-grid;place-items:center;width:35px;height:35px;border-radius:11px;background:#e4f4fc;color:#108dca;font-weight:900}.story{background:#f7fcff;border:2px solid #c4e9f8;border-radius:22px;padding:22px;line-height:2.2;font-size:21px;font-weight:700}.blank{border:0;border-bottom:3px solid #77bddd;background:#fff;border-radius:5px;color:#d94b27;font-weight:900;text-align:center;outline:none;padding:2px 5px;max-width:100%}.blank:focus{border-color:#f27c25;background:#fff8e9}.wide{min-width:260px}.tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.tool{border:2px solid #d8e7ed;background:#fff;border-radius:13px;padding:10px 13px;font-weight:800;color:#446375}.tool:hover{background:#eefaff}.lesson{display:grid;grid-template-columns:1.1fr .9fr;gap:25px;margin-top:24px}.choices{display:flex;flex-wrap:wrap;gap:9px;padding:14px;background:#fff9eb;border-radius:18px;border:2px dashed #ffc465}.chip{border:2px solid #ffd582;background:white;border-radius:999px;padding:8px 12px;font-weight:800;transition:.15s}.chip:hover{transform:translateY(-2px);background:#fff0c9}.check-panel{background:#f8fff4;border:2px solid #cbeab9;border-radius:22px;padding:19px}.check-panel h2{font-size:21px;margin:0 0 10px;color:#3a8a43}.checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px}.check{border:2px solid #dce8dc;background:#fff;border-radius:12px;padding:10px;display:flex;gap:8px;align-items:center;font-weight:800}.check input{accent-color:#43a047;width:18px;height:18px}.score{margin:15px 0 0;background:#e7f6de;border-radius:13px;padding:11px;font-weight:900;color:#397a3f}.feedback{min-height:35px;margin-top:14px;font-weight:800;color:#1479a9}.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%) translateY(80px);background:#26354a;color:white;padding:12px 18px;border-radius:999px;font-weight:800;transition:.3s;z-index:4}.toast.show{transform:translateX(-50%) translateY(0)}@media(max-width:760px){.intro,.lesson{grid-template-columns:1fr}.top{align-items:flex-start}.badge{font-size:12px}.plate-wrap{min-height:290px}.dairy{left:0}.fork{right:-9px}.story{font-size:18px}.checklist{grid-template-columns:1fr}.wide{min-width:170px}}
+    /* Fixed food-menu layout: every food group stays inside its own area. */
+    .badge{display:none!important}
+    .plate-wrap{min-height:330px;padding:0}
+    .plate{width:min(100%,420px);height:310px;aspect-ratio:auto;padding:16px;display:grid;grid-template-columns:1fr 1.35fr;grid-template-rows:1fr 1fr;gap:10px}
+    .plate-wrap>.dairy,.plate-wrap>.nuts,.fork{display:none}
+    .fruit{grid-row:auto}
+    .zone{min-width:0;min-height:0;padding:27px 7px 7px;align-content:center;justify-content:center;gap:4px}
+    .zone h3{top:6px;left:9px;font-size:12px;white-space:nowrap}
+    .food{font-size:28px}
+    @media(max-width:760px){.plate{width:min(100%,400px);height:300px}.plate-wrap{min-height:310px}.zone{padding-top:26px}.food{font-size:27px}}
+    .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .word-group{background:#fff;border:1px solid #f5dfb1;border-radius:14px;padding:10px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start}
+    .word-group h3{width:100%;margin:0 0 3px;font-size:14px;color:#55707e;letter-spacing:.2px}
+    .word-group .chip{font-size:14px;padding:6px 9px}
+    @media(max-width:560px){.choices{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top"><div><div class="practice">Practice</div><div class="subtitle">A. Look, Read, and Write</div></div><div class="badge">答案<br>Answer</div></header>
+    <div class="card">
+      <section class="intro"><div><h1 class="title">My Plate</h1><p class="hint">認識六大類食物，完成英文餐點故事，再檢查今天的餐盤是否健康。點選下方食材可以快速填入句子！</p><button class="go" onclick="document.querySelector('#story').scrollIntoView({behavior:'smooth'})">開始練習 →</button></div><div class="plate-wrap"><div class="dairy">Dairy<span>🥛🧀</span></div><div class="nuts">Nuts &amp; Seeds<span>🥜</span></div><div class="plate"><div class="zone fruit"><h3>Fruits</h3><span class="food">🍎</span><span class="food">🍌</span><span class="food">🍓</span><span class="food">🍉</span></div><div class="zone veg"><h3>Vegetables</h3><span class="food">🥬</span><span class="food">🥕</span><span class="food">🥦</span><span class="food">🍆</span></div><div class="zone protein"><h3>Protein Foods</h3><span class="food">🐟</span><span class="food">🍗</span><span class="food">🍳</span></div><div class="zone grains"><h3>Grains</h3><span class="food">🍞</span><span class="food">🍚</span><span class="food">🍜</span></div></div><div class="fork">🍴</div></div></section>
+      <section class="section" id="story"><h2 class="section-head"><span class="letter">A</span> My Food Story</h2><div class="story">I want to make <input class="blank" data-field="purpose" placeholder="lunch"> for <input class="blank" data-field="target" placeholder="my mom">.<br>I need <input class="blank wide" data-field="ingredients" placeholder="some chicken and rice">.<br>Look! It’s <input class="blank" data-field="object" placeholder="a flower">.<br>Do you like my <input class="blank" data-field="adjective" placeholder="cute"> <input class="blank" data-field="meal" placeholder="lunch">?</div><div class="tools"><button class="tool" onclick="readStory()">🔊 Listen</button><button class="tool" onclick="copyStory()">📋 Copy my story</button><button class="tool" onclick="resetLesson()">↻ Try again</button></div><div class="feedback" id="storyFeedback" aria-live="polite"></div></section>
+      <div class="lesson"><section class="section"><h2 class="section-head"><span class="letter">B</span> Food Word Bank</h2><div class="choices" id="wordBank"><button class="chip" data-value="some chicken and rice">🍗 chicken &amp; rice</button><button class="chip" data-value="some bread and milk">🍞 bread &amp; milk</button><button class="chip" data-value="four apples and a banana">🍎 apples &amp; banana</button><button class="chip" data-value="some fish and noodles">🐟 fish &amp; noodles</button><button class="chip" data-value="a cat">🐱 a cat</button><button class="chip" data-value="a flower">🌸 a flower</button></div><p class="hint">先點一下句子中的空格，再選擇食材或單字。</p></section><section class="section"><div class="check-panel"><h2>① Review your meals for today</h2><div class="checklist" id="checks"><label class="check"><input type="checkbox" data-kind="water">💧 Enough water</label><label class="check"><input type="checkbox" data-kind="dairy">🥛 Some milk</label><label class="check"><input type="checkbox" data-kind="fruit">🍎 Fruits</label><label class="check"><input type="checkbox" data-kind="vegetable">🥦 Vegetables</label><label class="check"><input type="checkbox" data-kind="protein">🍗 Protein foods</label><label class="check"><input type="checkbox" data-kind="grain">🍚 Grains</label></div><div class="score" id="score">Healthy plate: 0 / 6</div><button class="go" style="margin-top:12px;width:100%" onclick="checkPlate()">Check my plate ✨</button><div class="feedback" id="plateFeedback" aria-live="polite"></div></div></section></div>
+    </div>
+  </main><div class="toast" id="toast"></div>
+  <script>
+    let activeInput=null;const inputs=[...document.querySelectorAll('.blank')];
+    inputs.forEach(i=>{i.addEventListener('focus',()=>activeInput=i);i.addEventListener('input',()=>{document.getElementById('storyFeedback').textContent='Great! Keep writing your food story.'})});
+    document.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{if(!activeInput){toast('請先點選句子中的一個空格！');return}activeInput.value=b.dataset.value;activeInput.focus();toast('已填入：'+b.textContent.trim())}));
+    function story(){const v=n=>document.querySelector(`[data-field="${n}"]`).value.trim()||'____';return `I want to make ${v('purpose')} for ${v('target')}. I need ${v('ingredients')}. Look! It’s ${v('object')}. Do you like my ${v('adjective')} ${v('meal')}?`}
+    function readStory(){if(!('speechSynthesis'in window)){toast('此瀏覽器不支援語音功能。');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(story());u.lang='en-US';u.rate=.78;speechSynthesis.speak(u);document.getElementById('storyFeedback').textContent='Listen carefully and read along!'}
+    async function copyStory(){try{await navigator.clipboard.writeText(story());toast('英文故事已複製！')}catch(e){toast('無法自動複製，請手動選取文字。')}}
+    function resetLesson(){inputs.forEach(i=>i.value='');document.querySelectorAll('#checks input').forEach(i=>i.checked=false);updateScore();document.getElementById('storyFeedback').textContent='';document.getElementById('plateFeedback').textContent='';toast('已重新開始！')}
+    function updateScore(){const n=document.querySelectorAll('#checks input:checked').length;document.getElementById('score').textContent=`Healthy plate: ${n} / 6`;return n}
+    document.querySelectorAll('#checks input').forEach(i=>i.addEventListener('change',updateScore));
+    function checkPlate(){const selected=[...document.querySelectorAll('#checks input:checked')].map(x=>x.dataset.kind);const required=['fruit','vegetable','protein','grain'];const missing=required.filter(x=>!selected.includes(x));let msg=missing.length?`Nice try! Add ${missing.map(x=>({fruit:'fruit',vegetable:'vegetables',protein:'protein foods',grain:'grains'}[x])).join(', ')} to make your plate more balanced.`:'Wonderful! Your plate has all four main food groups!';if(!selected.includes('water'))msg+=' Don’t forget to drink water.';document.getElementById('plateFeedback').textContent=msg;toast(missing.length?'再加一些不同種類的食物吧！':'健康餐盤完成！🎉')}
+    let toastTimer;function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2400)}
+    /* Extra Food Word Bank vocabulary */
+    (function () {
+      const words = [
+        ['an apple', 'apple'], ['a banana', 'banana'], ['some grapes', 'grapes'], ['an orange', 'orange'],
+        ['some carrots', 'carrots'], ['some broccoli', 'broccoli'], ['some corn', 'corn'], ['some salad', 'salad'],
+        ['some chicken', 'chicken'], ['some fish', 'fish'], ['an egg', 'egg'], ['some tofu', 'tofu'],
+        ['some rice', 'rice'], ['some noodles', 'noodles'], ['some bread', 'bread'], ['a sandwich', 'sandwich'],
+        ['some milk', 'milk'], ['some cheese', 'cheese'], ['some yogurt', 'yogurt'], ['some water', 'water'],
+        ['a happy face', 'happy face'], ['a star', 'star'], ['a flower', 'flower'], ['a cat', 'cat'],
+        ['healthy', 'healthy'], ['colorful', 'colorful'], ['yummy', 'yummy'], ['beautiful', 'beautiful']
+      ];
+      const bank = document.getElementById('wordBank');
+      if (!bank) return;
+      words.forEach(([value, label]) => {
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'chip'; button.dataset.value = value; button.textContent = label;
+        button.addEventListener('click', () => {
+          if (!activeInput) { toast('Please click a blank first.'); return; }
+          activeInput.value = value; activeInput.focus(); toast('Added: ' + label);
+        });
+        bank.appendChild(button);
+      });
+    })();
+    /* Arrange the word bank by food group and add visual food cues. */
+    (function () {
+      const groups = [
+        ['Fruits', [['&#x1F34E;','an apple'],['&#x1F34C;','a banana'],['&#x1F347;','some grapes'],['&#x1F34A;','an orange'],['&#x1F353;','some strawberries'],['&#x1F349;','some watermelon']]],
+        ['Vegetables', [['&#x1F955;','some carrots'],['&#x1F966;','some broccoli'],['&#x1F33D;','some corn'],['&#x1F96C;','some salad'],['&#x1F346;','an eggplant'],['&#x1F952;','some cucumber']]],
+        ['Protein Foods', [['&#x1F357;','some chicken'],['&#x1F41F;','some fish'],['&#x1F95A;','an egg'],['&#x1F9C8;','some tofu'],['&#x1F969;','some beef'],['&#x1F95C;','some peanuts']]],
+        ['Grains', [['&#x1F35A;','some rice'],['&#x1F35C;','some noodles'],['&#x1F35E;','some bread'],['&#x1F96A;','a sandwich'],['&#x1F950;','a croissant'],['&#x1F35D;','some pasta']]],
+        ['Dairy & Drinks', [['&#x1F95B;','some milk'],['&#x1F9C0;','some cheese'],['&#x1F96B;','some yogurt'],['&#x1F4A7;','some water']]],
+        ['Fun Words', [['&#x2B50;','a star'],['&#x1F338;','a flower'],['&#x1F431;','a cat'],['&#x1F60A;','a happy face'],['&#x1F49A;','healthy'],['&#x1F308;','colorful'],['&#x1F60B;','yummy'],['&#x2728;','beautiful']]]
+      ];
+      const bank = document.getElementById('wordBank');
+      if (!bank) return;
+      bank.innerHTML = '';
+      groups.forEach(([title, words]) => {
+        const group = document.createElement('section'); group.className = 'word-group';
+        const heading = document.createElement('h3'); heading.textContent = title; group.appendChild(heading);
+        words.forEach(([icon, value]) => {
+          const button = document.createElement('button'); button.type = 'button'; button.className = 'chip'; button.dataset.value = value;
+          button.innerHTML = icon + ' ' + value;
+          button.addEventListener('click', () => {
+            if (!activeInput) { toast('Please click a blank first.'); return; }
+            activeInput.value = value; activeInput.focus(); toast('Added: ' + value);
+          });
+          group.appendChild(button);
+        });
+        bank.appendChild(group);
+      });
+    })();
+  </script>
+</body>
+</html>
