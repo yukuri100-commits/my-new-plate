@@ -24,6 +24,15 @@
       from { opacity: 0; transform: translateY(10px); } 
       to { opacity: 1; transform: translateY(0); } 
     }
+    .textbook-strip { background: linear-gradient(135deg,#effaff,#fff9e8); border: 2px solid #bae6fd; border-radius: 20px; padding: 16px; margin-bottom: 24px; }
+    .textbook-strip summary { cursor: pointer; font-weight: 800; color: #075985; font-size: 1.1rem; }
+    .book-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:14px; }
+    .book-card { background:#fff; border:2px solid #dbeafe; border-radius:16px; overflow:hidden; box-shadow:0 5px 14px #5b8aa21c; }
+    .book-card img { display:block; width:100%; height:150px; object-fit:cover; object-position:center; }
+    .book-card figcaption { padding:10px 12px; font-weight:700; color:#334155; }
+    .farm-motifs { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .farm-motif { border-radius:999px; padding:7px 11px; background:#fff; border:1px solid #bae6fd; color:#075985; font-weight:700; }
+    @media(max-width:640px){ .book-grid{grid-template-columns:1fr}.book-card img{height:130px} }
   </style>
 </head>
 <body class="bg-yellow-50">
@@ -198,6 +207,15 @@
             </div>
 
             <div className="p-6 md:p-8">
+              <details className="textbook-strip" open>
+                <summary>📚 Look &amp; Read：課本農場小導覽</summary>
+                <p className="mt-2 text-sm text-sky-900">先觀察課本中的 helpers：grandma、happy ducks、smartphone、drones，再開始創作你的故事。</p>
+                <div className="book-grid">
+                  <figure className="book-card"><img src="./assets/textbook-farm-scenes.png" alt="Rice field with ducks and a drone counting watermelons" /><figcaption>🌾 Rice field · 🦆 happy ducks · 🚁 drone</figcaption></figure>
+                  <figure className="book-card"><img src="./assets/textbook-organic-farm.png" alt="Organic market and animal-friendly farm" /><figcaption>🛒 Organic food · 🐔 animal-friendly farm</figcaption></figure>
+                </div>
+                <div className="farm-motifs" aria-label="Textbook vocabulary"><span className="farm-motif">🌾 grow rice</span><span className="farm-motif">🍉 count watermelons</span><span className="farm-motif">📱 smartphone</span><span className="farm-motif">🌱 organic</span><span className="farm-motif">🐄 animal-friendly</span></div>
+              </details>
               {step === 'edit' ? (
                 <div className="space-y-6 fade-in">
                   <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg text-blue-800 shadow-sm flex gap-3">
