@@ -104,6 +104,18 @@
         { id:'adjective', label:'7. Adjective (形容詞)', placeholder:'e.g., organic', suggestions:['organic','fresh','yummy','sweet','natural'] },
         { id:'ending', label:'8. Fun Ending (有趣的結尾)', placeholder:"It's...", suggestions:['healthy and good for the earth','super yummy and gives me power','magical and makes me fly','expensive but worth it','spicy like a dragon\'s fire','the best food in the universe'] }
       ];
+      const emojiForWord = word => ({
+        grandma:'👵', grandpa:'👴', uncle:'🧔', aunt:'👩', sister:'👧', brother:'👦',
+        rice:'🍚', corn:'🌽', wheat:'🌾', lettuce:'🥬', cabbage:'🥬',
+        ducks:'🦆', chickens:'🐔', dogs:'🐶', bees:'🐝', cats:'🐱',
+        smartphone:'📱', tablet:'📲', computer:'💻', iPad:'📱', watch:'⌚',
+        watermelons:'🍉', pumpkins:'🎃', apples:'🍎', tomatoes:'🍅',
+        drones:'🚁', robots:'🤖', cameras:'📷', sensors:'📡',
+        organic:'🌱', fresh:'🥗', yummy:'😋', sweet:'🍬', natural:'🌿',
+        'healthy and good for the earth':'🌍', 'super yummy and gives me power':'⚡',
+        'magical and makes me fly':'✨', 'expensive but worth it':'💎',
+        "spicy like a dragon's fire":'🐉', 'the best food in the universe':'🌟'
+      }[word] || '✨');
 
       const derivedPronoun = useMemo(() => {
         const input = formData.person.trim().toLowerCase();
@@ -284,7 +296,7 @@
                                 onClick={() => handleInputChange(field.id, s)} 
                                 className={`text-sm border-2 px-3 py-1.5 rounded-full font-medium transition-colors ${formData[field.id] === s ? 'bg-green-500 text-white border-green-500 shadow-md' : 'bg-white border-slate-200 text-slate-600 hover:bg-green-50 hover:border-green-300'}`}
                               >
-                                {s}
+                                <span aria-hidden="true">{emojiForWord(s)}</span> {s}
                               </button>
                             ))}
                           </div>
